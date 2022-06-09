@@ -1,0 +1,21 @@
+@font-face{
+    font-family: "Level Up";
+    src:url('./fonts/Levelup.ttf')
+}
+.green-color{
+    background-color: rgb(21 151 23);;
+}
+.common-color{
+    color:rgb(59, 230, 61);
+}
+
+.font-level {
+    font-family: "Level Up";
+}
+
+body {
+    min-height: 100vh;
+    background-image: url('./img/background2.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+}

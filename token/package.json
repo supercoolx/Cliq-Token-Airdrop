@@ -1,0 +1,27 @@
+{
+  "name": "warptoken",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "truffle migrate --network mumbai"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@openzeppelin/contracts": "^4.5.0",
+    "@truffle/hdwallet-provider": "^2.0.8",
+    "dotenv": "^16.0.1",
+    "truffle": "^5.4.2"
+  },
+  "devDependencies": {
+    "@openzeppelin/test-helpers": "^0.5.10",
+    "prettier": "^2.3.1",
+    "truffle-plugin-verify": "^0.5.7"
+  }
+}
