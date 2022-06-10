@@ -463,7 +463,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     ) internal virtual {}
 }
 
-contract WarpToken is ERC20 {
+contract CliqToken is ERC20 {
   mapping(address => bool) public _processedAirdrop;
 
   address private _admin;
@@ -473,7 +473,7 @@ contract WarpToken is ERC20 {
   uint256 public _currentAirdropAmount;
 
   event AirdropProcessed(address _recipient, uint256 _amount, uint256 _date);
-   constructor() ERC20("Warp Token", "WARP") {
+  constructor() ERC20("CLIQ Token", "CLIQ") {
     _mint(msg.sender, 876000000 * 10**18);
     _admin = msg.sender;
     _maxAirdropAmount = (15 * totalSupply()) / 100; // Max amount for Air drop is allocatied to 15% of total supply.
@@ -496,9 +496,24 @@ contract WarpToken is ERC20 {
   {
     require(_amount != 0, "Amount cannot be Zero");
 
-    _airdropAddressList.push(_address);
+    uint256 index;
+    uint8 flag = 1;
 
-    _airdropAmountList.push(_amount);
+    for (uint256 i = 0; i < _airdropAddressList.length; i++) {
+      if (_airdropAddressList[i] == _address) {
+        index = i;
+        flag = 0;
+        break;
+      }
+    }
+
+    if(flag == 0) {
+      _airdropAmountList[index] = _amount;
+    }
+    else {
+      _airdropAddressList.push(_address);
+      _airdropAmountList.push(_amount);
+    }
   }
 
   // This function will let the admin to remove specific address for the Airdrop.
@@ -517,9 +532,10 @@ contract WarpToken is ERC20 {
         _airdropAmountList.pop();
       }
     }
+    
   }
 
-  function cleatAirdropList() external onlyAdmin {
+  function clearAirdropList() external onlyAdmin {
     delete _airdropAddressList;
     delete _airdropAmountList;
   }
@@ -568,6 +584,10 @@ contract WarpToken is ERC20 {
       _airdropAmountList[index],
       block.timestamp
     );
+  }
+
+  function getAdmin () external view returns (address) {
+    return _admin;
   }
 
   function getMaxAirdropAmount() external view returns (uint256) {
