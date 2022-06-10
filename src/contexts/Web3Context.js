@@ -5,7 +5,7 @@ import CliqToken from "../abi/CliqToken.json";
 export const context = createContext(null);
 export const useWeb3Context = () => useContext(context);
 
-const smartContractAddresses = "0xcDEB45F3284CBB98B8fE77268E347863bAc99C61";
+const smartContractAddresses = "0xcA00c8cc84e1d8Ae792a7fb93E75F564d42309E8";
 
 const Web3Provider = ({ children }) => {
     const [web3] = useState(new Web3(window.ethereum));
