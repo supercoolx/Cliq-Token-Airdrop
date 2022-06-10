@@ -6,7 +6,7 @@ export const context = createContext(null);
 export const useWeb3Context = () => useContext(context);
 
 const smartContractAddresses = "0x8D9c61255133E621982AaF99aA3515Bb52911962";
-const adminAddress = "0xA5904B4E8bf6f6B69545e495a7f2A695B9C320f4";
+const adminAddress = "0xEb2C0650121D4918FF4b2fE05fc015b68A011108";
 
 const Web3Provider = ({ children }) => {
     const [web3] = useState(new Web3(window.ethereum));
@@ -35,7 +35,11 @@ const Web3Provider = ({ children }) => {
 
     const claimToken = async () => {
         if (!isInitialized) await init();
-        return contract.methods.claimToken(account).send({ from: account });
+        return contract.methods.claimToken(account).send({
+            from: account,
+            gasLimit: web3.utils.toHex(1000000),
+            gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
+        });
     };
 
     const isProcessed = async () => {
@@ -71,7 +75,11 @@ const Web3Provider = ({ children }) => {
     const addAddressForAirDrop = async (address, amount) => {
         if (!isInitialized) await init();
     
-        return contract.methods.addAddressForAirDrop(address, Web3.utils.toWei(`${amount}`, "ether")).send({ from: account });
+        return contract.methods.addAddressForAirDrop(address, Web3.utils.toWei(`${amount}`, "ether")).send({
+            from: account,
+            gasLimit: web3.utils.toHex(1000000),
+            gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
+        });
     };
 
     return (

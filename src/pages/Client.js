@@ -12,8 +12,6 @@ const Client = () => {
         txLink: "",
     });
     const claim = async (e) => {
-        e.preventDefault();
-        const data = new FormData(e.target);
         let transactionHash;
         await init();
         setMessage({
@@ -40,13 +38,6 @@ const Client = () => {
                 text: "Your address has already claimed the airdrop",
                 color: "green",
             });
-        } else if (!(whiteListCheck[1] === data.get("amount"))) {
-            setLoading(false);
-            console.log("Invalid Amount");
-            setMessage({
-                text: `Invalid Amount. Your allocated amount is ${whiteListCheck[1]}`,
-                color: "red",
-            });
         } else {
             await claimToken()
                 .then((tx) => {
@@ -69,7 +60,7 @@ const Client = () => {
 
     return (
         <div className='py-5'>
-            <form onSubmit={claim} className="credit-card w-full lg:w-3/4 sm:w-auto shadow-lg border-2 border-green-400 mx-auto rounded-xl bg-gray-800">
+            <form className="credit-card w-full lg:w-3/4 sm:w-auto shadow-lg border-2 border-green-400 mx-auto rounded-xl bg-gray-800">
                 <main className="p-4">
                     <h1 className="text-2xl font-bold text-gray-300 text-center font-level common-color">
                         CLIQ Token Airdrop
@@ -99,20 +90,6 @@ const Client = () => {
                         </ul>
                     </div>
                     <div className="">
-                        <div className="my-3">
-                            <h5 className="card-text text-gray-300 font-bold">
-                                Enter the Airdrop Amount:
-                            </h5>
-                            <div className="my-3">
-                                <input
-                                type="number"
-                                name="amount"
-                                className="input input-bordered block w-full focus:ring focus:outline-none"
-                                placeholder="Enter the Airdrop Token Amount"
-                                />
-                            </div>
-                            <div className="p-4"></div>
-                        </div>
                         {loading ? (
                             <p className="card-text text-green-400 text-center font-bold">
                                 Processing....
@@ -147,7 +124,7 @@ const Client = () => {
                     </div>
                 </main>
                 <footer className="p-4">
-                    <button className="btn green-color submit-button focus:ring focus:outline-none w-full font-level">
+                    <button onClick={claim} className="btn green-color submit-button focus:ring focus:outline-none w-full font-level">
                         Claim Airdrop
                     </button>
                 </footer>
