@@ -11,26 +11,27 @@ const Admin = () => {
     const [amount, setAmount] = useState(0);
     const [errorMessage, setErrorMessage] = useState("");
 
+    const [name, setName] = useState(null);
+    const [symbol, setSymbol] = useState(null);
+    const [initial, setInitial] = useState('0');
+    const [max, setMax] = useState('0');
+
     const onWhitelistChange = e => setAdress(e.target.value);
     const onAmountChange = e => setAmount(e.target.value);
     const onwhitelistAddress = async (e) => {
-        console.log(address, amount);
         e.preventDefault();
         setErrorMessage("");
         await init();
         if (await checkAdmin()) {
-            await addAddressForAirDrop(address, amount)
-                .then((tx) => {
-                    console.log(tx);
-                    console.log(typeof tx);
+            addAddressForAirDrop(address, amount)
+                .then(tx => {
                     console.log(tx.transactionHash);
+                    loadWhiteList();
                 })
-                .catch((err) => {
-                    console.error(err);
-                });
+                .catch(err => console.error(err));
         } else setErrorMessage("Only Admin of the contract can add address to whitelist");
     };
-    useEffect(() => {
+    const loadWhiteList = () => {
         if(contract) {
             Promise.all([
                 contract.methods.getWhitelistedAddress().call(),
@@ -41,7 +42,24 @@ const Admin = () => {
             })
             .catch(err => console.log(err));
         }
-    }, [contract]);
+    }
+    const loadTokenDetail = () => {
+        if(contract) {
+            Promise.all([
+                contract.methods.name().call(),
+                contract.methods.symbol().call(),
+                contract.methods.totalSupply().call(),
+                contract.methods.getMaxAirdropAmount().call()
+            ]).then(res => {
+                setName(res[0]);
+                setSymbol(res[1]);
+                setInitial(res[2]);
+                setMax(res[3]);
+            });
+        }
+    }
+    useEffect(loadWhiteList, [contract]);
+    useEffect(loadTokenDetail, [contract]);
 
     return (
         <div className='px-5 pt-10 flex'>
@@ -82,10 +100,10 @@ const Admin = () => {
                 <div className="m-4 mt-4 p-4 shadow-lg rounded-xl bg-gray-800 border-2 border-green-400">
                     <h1 className="text-xl font-semibold text-gray-300 text-center font-level common-color">Contract Details</h1>
                     <div className="card-text text-gray-300 flex flex-col gap-5 pt-3">
-                        <div><span className='common-color font-bold'>Token Name:</span> CLIQ Token</div>
-                        <div><span className='common-color font-bold'>Symbol:</span> CLIQ</div>
-                        <div><span className='common-color font-bold'>Initial Supply:</span> 876000000 CLIQ</div>
-                        <div><span className='common-color font-bold'>Max Airdrop:</span> 131400000 CLIQ</div>
+                        <div><span className='common-color font-bold'>Token Name:</span> {name}</div>
+                        <div><span className='common-color font-bold'>Symbol:</span> {symbol}</div>
+                        <div><span className='common-color font-bold'>Initial Supply:</span> {Web3.utils.fromWei(initial)} {symbol}</div>
+                        <div><span className='common-color font-bold'>Max Airdrop:</span> {Web3.utils.fromWei(max)} {symbol}</div>
                     </div>
                 </div>
             </div>

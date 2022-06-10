@@ -1,15 +1,15 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import Web3 from 'web3';
-import WarptokenABI from "../abi/WarpToken.json";
+import CliqToken from "../abi/CliqToken.json";
 
 export const context = createContext(null);
 export const useWeb3Context = () => useContext(context);
 
-const smartContractAddresses = "0x8D9c61255133E621982AaF99aA3515Bb52911962";
-const adminAddress = "0xEb2C0650121D4918FF4b2fE05fc015b68A011108";
+const smartContractAddresses = "0xcDEB45F3284CBB98B8fE77268E347863bAc99C61";
 
 const Web3Provider = ({ children }) => {
     const [web3] = useState(new Web3(window.ethereum));
+    const [admin, setAdmin] = useState('');
     const [account, setAccount] = useState('');
     const [contract, setContract] = useState(null);
     const [isInitialized, setInitialized] = useState(false);
@@ -21,8 +21,14 @@ const Web3Provider = ({ children }) => {
                 setInitialized(true);
             });
         }
-        setContract(new web3.eth.Contract(WarptokenABI, smartContractAddresses));
+        setContract(new web3.eth.Contract(CliqToken.abi, smartContractAddresses));
     }, [web3]);
+
+    useEffect(() => {
+        if(contract) {
+            contract.methods.getAdmin().call().then(res => setAdmin(res));
+        }
+    }, [contract])
 
     const init = () => {
         web3.eth.requestAccounts()
@@ -37,8 +43,8 @@ const Web3Provider = ({ children }) => {
         if (!isInitialized) await init();
         return contract.methods.claimToken(account).send({
             from: account,
-            gasLimit: web3.utils.toHex(1000000),
-            gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
+            gasLimit: Web3.utils.toHex(1000000),
+            gasPrice: Web3.utils.toHex(Web3.utils.toWei('30', 'gwei'))
         });
     };
 
@@ -58,7 +64,6 @@ const Web3Provider = ({ children }) => {
         let flag = false, i;
         for (i = 0; i < accountList.length; i++) {
             if ( accountList[i].toLowerCase().localeCompare(account.toLowerCase()) === 0 ) {
-                console.log('ds')
                 flag = true;
                 return await [flag, Web3.utils.fromWei(`${amountList[i]}`, "ether")];
             }
@@ -69,7 +74,7 @@ const Web3Provider = ({ children }) => {
 
     const checkAdmin = async () => {
         if (!isInitialized) await init();
-        return account.toLowerCase().localeCompare(adminAddress.toLowerCase()) === 0;
+        return account.toLowerCase().localeCompare(admin.toLowerCase()) === 0;
     };
 
     const addAddressForAirDrop = async (address, amount) => {
@@ -77,8 +82,8 @@ const Web3Provider = ({ children }) => {
     
         return contract.methods.addAddressForAirDrop(address, Web3.utils.toWei(`${amount}`, "ether")).send({
             from: account,
-            gasLimit: web3.utils.toHex(1000000),
-            gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
+            gasLimit: Web3.utils.toHex(1000000),
+            gasPrice: Web3.utils.toHex(Web3.utils.toWei('30', 'gwei'))
         });
     };
 

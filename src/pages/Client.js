@@ -60,7 +60,7 @@ const Client = () => {
 
     return (
         <div className='py-5'>
-            <form className="credit-card w-full lg:w-3/4 sm:w-auto shadow-lg border-2 border-green-400 mx-auto rounded-xl bg-gray-800">
+            <div className="credit-card w-full lg:w-3/4 sm:w-auto shadow-lg border-2 border-green-400 mx-auto rounded-xl bg-gray-800">
                 <main className="p-4">
                     <h1 className="text-2xl font-bold text-gray-300 text-center font-level common-color">
                         CLIQ Token Airdrop
@@ -128,7 +128,7 @@ const Client = () => {
                         Claim Airdrop
                     </button>
                 </footer>
-            </form>
+            </div>
         </div>
     )
 }
